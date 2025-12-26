@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>#8กุมภากาเห็นชอบ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .canvas-container-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            min-height: 200px;
+            align-items: center;
+        }
+        /* Override FabricJS wrapper styles to make it responsive */
+        .canvas-container {
+            max-width: 100%;
+        }
+        
+        /* Utility for transitioning visibility */
+        .fade-transition {
+            transition: opacity 0.3s ease-in-out;
+            opacity: 1;
+        }
+        .hidden {
+            display: none !important;
+            opacity: 0;
+        }
+        
+        .sticker-item {
+            cursor: pointer; 
+            transition: transform 0.1s;
+        }
+        .sticker-item:hover {
+            transform: scale(1.05);
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="text-center mb-5 display-5 fw-bold">สร้างรูป #8กุมภากาเห็นชอบ</h1>
+
+            <!-- Step 1: Upload -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">1. อัปโหลดรูป</h5>
+                </div>
+                <div class="card-body">
+                    <input type="file" id="fileInput" class="form-control form-control-lg" accept="image/*">
+                    <div class="form-text mt-2">รองรับไฟล์ JPG และ PNG, หากจะนำไปตั้งเป็นรูปโปรไฟล์ แนะนำให้ครอปสี่เหลี่ยมจัตุรัสมาก่อน</div>
+                </div>
+            </div>
+
+            <!-- Step 2: Editor -->
+            <div id="editorSection" class="card shadow-sm mb-4 hidden fade-transition">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">เพิ่มสติ๊กเกอร์</h5>
+                    <div>
+                        <button id="clearStickersBtn" class="btn btn-outline-secondary btn-sm me-2">ล้างสติ๊กเกอร์</button>
+                        <button id="resetBtn" class="btn btn-outline-danger btn-sm">รีเซ็ต/เลือกรูปใหม่</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3 text-muted">กดที่สติ๊กเกอร์เพื่อเพิ่มเข้ามาในรูป</p>
+                    
+                    <div id="stickersContainer" class="d-flex gap-3 mb-4 overflow-auto pb-3 pt-1 border-bottom">
+                        <!-- Stickers will be injected here -->
+                    </div>
+
+                    <!-- Canvas Editor -->
+                    <div class="canvas-container-wrapper" id="canvas-wrapper">
+                        <canvas id="c"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Export -->
+            <div id="exportSection" class="card shadow-sm mb-5 hidden fade-transition">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">3. บันทึกรูป</h5>
+                </div>
+                <div class="card-body text-center py-4">
+                    <button id="downloadBtn" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">
+                        กดปุ่มนี้เพื่อบันทึกรูป
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const stickers = [
+            'img/VoteYes-Profile-TP.png',
+            'img/VoteYes-Profile-TP-L.png'
+        ];
+
+        // State variables
+        let fabricCanvas = null;
+        let originalWidth = 0;
+        let originalHeight = 0;
+        let scaleFactor = 1;
+        let currentImgUrl = null;
+        let hasImage = false;
+        let resizeTimer = null;
+
+        // DB Elements
+        const fileInput = document.getElementById('fileInput');
+        const editorSection = document.getElementById('editorSection');
+        const exportSection = document.getElementById('exportSection');
+        const canvasWrapper = document.getElementById('canvas-wrapper');
+        const stickersContainer = document.getElementById('stickersContainer');
+        const resetBtn = document.getElementById('resetBtn');
+        const clearStickersBtn = document.getElementById('clearStickersBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Initialize Stickers
+        stickers.forEach(src => {
+            const div = document.createElement('div');
+            div.className = 'border rounded p-2 bg-white flex-shrink-0 sticker-item';
+            div.innerHTML = `<img src="${src}" style="height: 60px; object-fit: contain;">`;
+            div.addEventListener('click', () => addSticker(src));
+            stickersContainer.appendChild(div);
+        });
+
+        // Event Listeners
+        fileInput.addEventListener('change', handleUpload);
+        resetBtn.addEventListener('click', reset);
+        clearStickersBtn.addEventListener('click', clearStickers);
+        downloadBtn.addEventListener('click', download);
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (hasImage) initCanvas(null, true);
+            }, 100);
+        });
+
+        function handleUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (f) => {
+                const data = f.target.result;
+                initCanvas(data);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function toggleSections(show) {
+            if (show) {
+                editorSection.classList.remove('hidden');
+                exportSection.classList.remove('hidden');
+                // Trigger reflow for transition if needed, though mostly visibility handling here
+                requestAnimationFrame(() => {
+                    editorSection.style.opacity = '1';
+                    exportSection.style.opacity = '1';
+                });
+            } else {
+                editorSection.classList.add('hidden');
+                exportSection.classList.add('hidden');
+                editorSection.style.opacity = '0';
+                exportSection.style.opacity = '0';
+            }
+        }
+
+        function initCanvas(imgUrl, isResize = false) {
+            if (imgUrl && !isResize) {
+                currentImgUrl = imgUrl;
+            }
+            
+            if (!currentImgUrl) return;
+
+            hasImage = true;
+            toggleSections(true);
+
+            // Wait for DOM update so dimensions are correct (mostly immediate in Vanilla JS unlike Alpine nextTick, but good practice if animation involved)
+            setTimeout(() => {
+                // Should dispose old canvas if exists to prevent duplicates or memory leaks
+                if (fabricCanvas) {
+                    fabricCanvas.dispose();
+                    fabricCanvas = null;
+                }
+                
+                // Reset wrapper content to clear any FabricJS added wrappers
+                canvasWrapper.innerHTML = '<canvas id="c"></canvas>';
+                
+                // Measure
+                const styles = window.getComputedStyle(canvasWrapper);
+                const paddingX = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
+                const availableWidth = canvasWrapper.clientWidth - paddingX;
+                
+                fabric.Image.fromURL(currentImgUrl, (img) => {
+                    if (!img) return;
+
+                    if (!isResize) {
+                        originalWidth = img.width;
+                        originalHeight = img.height;
+                    }
+
+                    const safeAvailableWidth = availableWidth > 0 ? availableWidth : 300;
+                    
+                    // Calculate scale
+                    scaleFactor = Math.min(safeAvailableWidth / originalWidth, 1);
+                    
+                    const displayWidth = originalWidth * scaleFactor;
+                    const displayHeight = originalHeight * scaleFactor;
+
+                    fabricCanvas = new fabric.Canvas('c', {
+                        width: displayWidth,
+                        height: displayHeight,
+                        preserveObjectStacking: true,
+                        selection: false
+                    });
+
+                    img.scale(scaleFactor);
+                    
+                    fabricCanvas.setBackgroundImage(img, () => {
+                        if (fabricCanvas) fabricCanvas.renderAll();
+                    });
+                });
+            }, 0);
+        }
+
+        function addSticker(src) {
+            if (!fabricCanvas) return;
+
+            fabric.Image.fromURL(src, (img) => {
+                if (!img) return;
+
+                const targetWidth = fabricCanvas.width * 0.25;
+                const scale = targetWidth / img.width;
+                
+                img.set({
+                    left: fabricCanvas.width / 2,
+                    top: fabricCanvas.height / 2,
+                    originX: 'center',
+                    originY: 'center',
+                    scaleX: scale,
+                    scaleY: scale,
+                    
+                    cornerStyle: 'circle',
+                    transparentCorners: false,
+                    cornerColor: '#007bff',
+                    cornerStrokeColor: '#ffffff',
+                    borderColor: '#007bff',
+                    cornerSize: 30,
+                    touchCornerSize: 30,
+                    padding: 10,
+                    lockScalingFlip: true
+                });
+                
+                img.setControlsVisibility({
+                    mt: false, mb: false, ml: false, mr: false,
+                    tl: true, tr: true, bl: true, br: true, mtr: true
+                });
+
+                fabricCanvas.add(img);
+                fabricCanvas.setActiveObject(img);
+                fabricCanvas.requestRenderAll();
+            });
+        }
+
+        function download() {
+            if (!fabricCanvas) return;
+            
+            fabricCanvas.discardActiveObject();
+            fabricCanvas.requestRenderAll();
+
+            setTimeout(() => {
+                const multiplier = 1 / scaleFactor;
+                
+                const dataURL = fabricCanvas.toDataURL({
+                    format: 'png',
+                    quality: 1,
+                    multiplier: multiplier
+                });
+
+                const link = document.createElement('a');
+                link.download = 'vote-yes-result.png';
+                link.href = dataURL;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }, 50);
+        }
+
+        function reset() {
+            hasImage = false;
+            currentImgUrl = null;
+            if (fabricCanvas) {
+                // fabricCanvas.dispose(); // Handled in initCanvas/toggle logic mainly, but good to clean up
+                fabricCanvas = null; // Removing reference
+            }
+            fileInput.value = '';
+            toggleSections(false);
+            
+            // Clear canvas wrapper visually
+            canvasWrapper.innerHTML = '<canvas id="c"></canvas>';
+        }
+
+        function clearStickers() {
+            if (!fabricCanvas) return;
+            fabricCanvas.remove(...fabricCanvas.getObjects());
+            fabricCanvas.requestRenderAll();
+        }
+    });
+</script>
+
+</body>
+</html>
