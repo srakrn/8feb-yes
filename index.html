@@ -4,12 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="สร้างรูปโปรไฟล์ #8กุมภากาเห็นชอบ">
+    <meta property="og:title" content="สร้างรูป #8กุมภากาเห็นชอบ">
     <meta property="og:image" content="img/og.png">
-    <title>สร้างรูปโปรไฟล์ #8กุมภากาเห็นชอบ</title>
+    <title>สร้างรูป #8กุมภากาเห็นชอบ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        html,
+        body {
+            background: #dbf4e4;
+        }
+
         .canvas-container-wrapper {
             width: 100%;
             display: flex;
@@ -50,7 +55,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 </head>
 
-<body class="bg-light">
+<body>
 
     <div class="container py-5">
         <div class="row justify-content-center">
@@ -58,15 +63,18 @@
                 <h1 class="text-center mb-5 display-5 fw-bold">สร้างรูป #8กุมภากาเห็นชอบ</h1>
 
                 <!-- Step 1: Upload -->
-                <div class="card shadow-sm mb-4">
+                <div id="uploadSection" class="card shadow-sm mb-4 fade-transition">
                     <div class="card-header bg-white py-3">
-                        <h5 class="mb-0 fw-bold">1. อัปโหลดรูป</h5>
+                        <h5 class="mb-0 fw-bold">เลือกรูป</h5>
                     </div>
-                    <div class="card-body">
-                        <input type="file" id="fileInput" class="form-control form-control-lg" accept="image/*">
-                        <div class="form-text mt-2">รองรับไฟล์ JPG และ PNG, หากจะนำไปตั้งเป็นรูปโปรไฟล์
+                    <div class="card-body text-center">
+                        <input type="file" id="fileInput" class="d-none" accept="image/*">
+                        <label for="fileInput" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">
+                            เลือกรูป
+                        </label>
+                        <div class="form-text mt-4">รองรับไฟล์ JPG และ PNG, หากจะนำไปตั้งเป็นรูปโปรไฟล์
                             แนะนำให้ครอปสี่เหลี่ยมจัตุรัสมาก่อน</div>
-                        <p class="form-text mt-2">เพื่อความเป็นส่วนตัวถึงที่สุดของท่าน รูปที่ท่านเลือก
+                        <p class="form-text mt-2 mb-0">เพื่อความเป็นส่วนตัวถึงที่สุดของท่าน รูปที่ท่านเลือก
                             จะถูกประมวลผลในเครื่องของท่านเอง
                             ไม่มีการส่งรูปและ/หรือข้อมูลใดๆ ออกไปจากอุปกรณ์ของท่าน
                             และไม่มีการเก็บข้อมูลผู้เข้าเยี่ยมชมเว็บไซต์นี้ด้วยวิธีการใดก็ตาม</p>
@@ -80,7 +88,7 @@
                         <div>
                             <button id="clearStickersBtn"
                                 class="btn btn-outline-secondary btn-sm me-2">ล้างสติ๊กเกอร์</button>
-                            <button id="resetBtn" class="btn btn-outline-danger btn-sm">รีเซ็ต/เลือกรูปใหม่</button>
+                            <button id="resetBtn" class="btn btn-outline-danger btn-sm">เลือกรูปใหม่</button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -98,15 +106,9 @@
                 </div>
 
                 <!-- Step 3: Export -->
-                <div id="exportSection" class="card shadow-sm mb-5 hidden fade-transition">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="mb-0 fw-bold">3. บันทึกรูป</h5>
-                    </div>
-                    <div class="card-body text-center py-4">
-                        <button id="downloadBtn" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">
-                            กดปุ่มนี้เพื่อบันทึกรูป
-                        </button>
-                    </div>
+                <div id="exportSection" class="mb-5 hidden fade-transition text-center">
+                    <button id="downloadBtn" width="100%" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">
+                        กดปุ่มนี้เพื่อบันทึกรูป
                 </div>
                 <hr />
                 <p class="small">
@@ -122,7 +124,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="imageModalLabel">รูปโปรไฟล์ของท่านพร้อมแล้ว</h5>
+                    <h5 class="modal-title fw-bold" id="imageModalLabel">รูปของท่านพร้อมแล้ว</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
@@ -155,6 +157,7 @@
 
             // DB Elements
             const fileInput = document.getElementById('fileInput');
+            const uploadSection = document.getElementById('uploadSection');
             const editorSection = document.getElementById('editorSection');
             const exportSection = document.getElementById('exportSection');
             const canvasWrapper = document.getElementById('canvas-wrapper');
@@ -162,7 +165,7 @@
             const resetBtn = document.getElementById('resetBtn');
             const clearStickersBtn = document.getElementById('clearStickersBtn');
             const downloadBtn = document.getElementById('downloadBtn');
-            
+
             // Modal Elements
             const imageModalElement = document.getElementById('imageModal');
             const bsModal = new bootstrap.Modal(imageModalElement);
@@ -182,7 +185,7 @@
             resetBtn.addEventListener('click', reset);
             clearStickersBtn.addEventListener('click', clearStickers);
             downloadBtn.addEventListener('click', download);
-            
+
             // Modal Listeners
             imageModalElement.addEventListener('hidden.bs.modal', closeModal);
 
@@ -207,6 +210,7 @@
 
             function toggleSections(show) {
                 if (show) {
+                    uploadSection.classList.add('hidden');
                     editorSection.classList.remove('hidden');
                     exportSection.classList.remove('hidden');
                     // Trigger reflow for transition if needed, though mostly visibility handling here
@@ -215,6 +219,7 @@
                         exportSection.style.opacity = '1';
                     });
                 } else {
+                    uploadSection.classList.remove('hidden');
                     editorSection.classList.add('hidden');
                     exportSection.classList.add('hidden');
                     editorSection.style.opacity = '0';
@@ -342,7 +347,7 @@
 
             function closeModal() {
                 // Clear memory/display when hidden
-                resultImage.src = ''; 
+                resultImage.src = '';
             }
 
             function reset() {
