@@ -158,6 +158,7 @@
             let currentImgUrl = null;
             let hasImage = false;
             let resizeTimer = null;
+            let originalFileType = 'image/png';
 
             // DB Elements
             const fileInput = document.getElementById('fileInput');
@@ -205,6 +206,8 @@
             function handleUpload(e) {
                 const file = e.target.files[0];
                 if (!file) return;
+
+                originalFileType = file.type;
 
                 const reader = new FileReader();
                 reader.onload = (f) => {
@@ -339,9 +342,17 @@
                 setTimeout(() => {
                     const multiplier = 1 / scaleFactor;
 
+                    let format = 'jpeg';
+                    let quality = 0.85;
+
+                    if (originalFileType === 'image/png') {
+                        format = 'png';
+                        quality = 1;
+                    }
+
                     const dataURL = fabricCanvas.toDataURL({
-                        format: 'png',
-                        quality: 1,
+                        format: format,
+                        quality: quality,
                         multiplier: multiplier
                     });
 
@@ -380,7 +391,8 @@
                 if (!resultImage.src) return;
 
                 const link = document.createElement('a');
-                link.download = 'vote-yes-profile.png';
+                const isJpeg = resultImage.src.startsWith('data:image/jpeg');
+                link.download = isJpeg ? 'vote-yes-profile.jpg' : 'vote-yes-profile.png';
                 link.href = resultImage.src;
                 document.body.appendChild(link);
                 link.click();
