@@ -134,6 +134,18 @@
         </div>
     </div>
 
+
+    <!-- Modal for Operation Closure (Unclosable) -->
+    <div class="modal fade" id="closureModal" tabindex="-1" aria-labelledby="closureModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-5">
+                    <h4 class="fw-bold">เพื่อให้เป็นไปตามพระราชบัญญัติว่าด้วยการออกเสียงประชามติ เว็บไซต์นี้หยุดให้บริการวันที่ 7 กุมภาพันธ์ 2569 เวลา 17:00 เป็นต้นไป และจะกลับมาให้บริการหลังปิดหีบลงคะแนนประชามติ วันที่ 8 กุมภาพันธ์ 2569 เวลา 17:00</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal for Result -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -160,6 +172,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+        // Check if the site should be closed based on time
+            // Check time on page load
+            const now = new Date();
+            
+            const startTime = new Date('2026-02-07T17:55:00');
+            const endTime = new Date('2026-02-08T17:05:00');
+            
+            // Check if current time is within the range
+            if (now >= startTime && now <= endTime) {
+                // Show the unclosable modal
+                const closureModalElement = document.getElementById('closureModal');
+                const closureModal = new bootstrap.Modal(closureModalElement, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                closureModal.show();
+                
+                // Prevent any interactions with the page content
+                document.body.style.pointerEvents = 'none';
+                closureModalElement.style.pointerEvents = 'auto';
+                
+                // Stop further execution of the app
+                return;
+            }
+            
+            // Continue w normal functionality
             const stickers = [
                 'img/VoteYes-Profile-TP.png',
                 'img/VoteYes-Profile-TP-L.png',
