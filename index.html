@@ -43,6 +43,11 @@
             opacity: 0;
         }
 
+        .modal-backdrop.closure-backdrop {
+            background-color: #dbf4e4;
+            opacity: 1;
+        }
+
         .sticker-item {
             cursor: pointer;
             transition: transform 0.1s;
@@ -57,27 +62,27 @@
 
 <body>
 
-    <div class="container py-5">
+    <div class="container py-5" id="app">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <h1 class="text-center mb-4 h2 fw-bold">สร้างรูป #8กุมภากาเห็นชอบ</h1>
+                <h1 class="text-center mb-4 h2">สร้างรูป #8กุมภากาเห็นชอบ</h1>
 
                 <!-- Step 1: Upload -->
                 <div id="uploadSection" class="card shadow-sm mb-4 fade-transition">
                     <div class="card-header bg-white py-3">
-                        <h5 class="mb-0 fw-bold">เลือกรูป</h5>
+                        <h5 class="mb-0">เลือกรูป</h5>
                     </div>
                     <div class="card-body text-center">
                         <div class="alert alert-warning" role="alert">
                             <strong>หากท่านเข้าเว็บนี้บนโทรศัพท์-แท็บเล็ต ผ่านแอปเฟซบุ๊ก/ทวิตเตอร์: </strong>
-                            เพื่อป้องกันการบันทึกรูปไม่ได้ แนะนำให้เปิดหน้านี้ด้วยเบราว์เซอร์หลักของเครื่อง 
+                            เพื่อป้องกันการบันทึกรูปไม่ได้ แนะนำให้เปิดหน้านี้ด้วยเบราว์เซอร์หลักของเครื่อง
                             (อาทิ Safari หรือ Chrome)
-                            ด้วยการแตะเมนูสามจุด [⋯] (มักอยู่มุมบนขวา) แล้วเลือก "เปิดในเบราว์เซอร์"
+                            ด้วยการแตะเมนูสามจุด [⋯] (มักอยู่มุมบนขวา) แล้วเลือก"เปิดในเบราว์เซอร์"
                             (หรือเมนูอื่นที่คล้ายกัน)
                         </div>
 
                         <input type="file" id="fileInput" class="d-none" accept="image/*">
-                        <label for="fileInput" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">
+                        <label for="fileInput" class="btn btn-primary btn-lg px-5  shadow-sm">
                             เลือกรูป
                         </label>
                         <div class="form-text mt-4">หากจะนำไปตั้งเป็นรูปโปรไฟล์
@@ -92,7 +97,7 @@
                 <!-- Step 2: Editor -->
                 <div id="editorSection" class="card shadow-sm mb-4 hidden fade-transition">
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 fw-bold">เพิ่มสติ๊กเกอร์</h5>
+                        <h5 class="mb-0">เพิ่มสติ๊กเกอร์</h5>
                         <div>
                             <button id="clearStickersBtn"
                                 class="btn btn-outline-secondary btn-sm me-2">ล้างสติ๊กเกอร์</button>
@@ -115,7 +120,7 @@
 
                 <!-- Step 3: Export -->
                 <div id="exportSection" class="mb-5 hidden fade-transition text-center">
-                    <button id="downloadBtn" width="100%" class="btn btn-success btn-lg px-5 fw-bold shadow-sm">
+                    <button id="downloadBtn" width="100%" class="btn btn-success btn-lg px-5  shadow-sm">
                         บันทึกรูป
                 </div>
                 <hr />
@@ -134,328 +139,326 @@
         </div>
     </div>
 
-
-    <!-- Modal for Operation Closure (Unclosable) -->
-    <div class="modal fade" id="closureModal" tabindex="-1" aria-labelledby="closureModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body text-center py-5">
-                    <h4 class="fw-bold">เพื่อให้เป็นไปตามพระราชบัญญัติว่าด้วยการออกเสียงประชามติ เว็บไซต์นี้หยุดให้บริการวันที่ 7 กุมภาพันธ์ 2569 เวลา 17:00 เป็นต้นไป และจะกลับมาให้บริการหลังปิดหีบลงคะแนนประชามติ วันที่ 8 กุมภาพันธ์ 2569 เวลา 17:00</h4>
+    <div class="container py-5" id="closure" hidden>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">หยุดให้บริการตามกฎหมายกำหนด</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>เพื่อให้เป็นไปตามพระราชบัญญัติว่าด้วยการออกเสียงประชามติ
+                            เว็บไซต์จำเป็นต้องหยุดให้บริการวันที่ 7 กุมภาพันธ์ 2569 เวลา 18:00 เป็นต้นไป
+                            และจะกลับมาให้บริการหลังปิดหีบลงคะแนนประชามติ วันที่ 8 กุมภาพันธ์ 2569 เวลา 17:00
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal for Result -->
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="imageModalLabel">รูปของท่านพร้อมแล้ว</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <p class="text-muted small">ผู้ใช้ Android และคอมพิวเตอร์ กดปุ่มด้านล่างเพื่อ</p>
-                    <button id="modalDownloadBtn" class="btn btn-success btn-lg px-5 fw-bold shadow-sm mb-3">
-                        บันทึกลงเครื่อง
-                    </button>
-                    <p class="text-muted small">ผู้ใช้ iOS กดค้างที่รูปด้านล่าง แล้วเลือกบันทึกรูป</p>
-                    <img id="resultImage" class="img-fluid border rounded shadow-sm mb-3" src=""
-                        alt="Generated Profile Picture" style="max-height: 60vh;">
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">ปิดหน้าต่างนี้</button>
+        <!-- Modal for Result -->
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">รูปของท่านพร้อมแล้ว</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p class="text-muted small">ผู้ใช้ Android และคอมพิวเตอร์ กดปุ่มด้านล่างเพื่อ</p>
+                        <button id="modalDownloadBtn" class="btn btn-success btn-lg px-5  shadow-sm mb-3">
+                            บันทึกลงเครื่อง
+                        </button>
+                        <p class="text-muted small">ผู้ใช้ iOS กดค้างที่รูปด้านล่าง แล้วเลือกบันทึกรูป</p>
+                        <img id="resultImage" class="img-fluid border rounded shadow-sm mb-3" src=""
+                            alt="Generated Profile Picture" style="max-height: 60vh;">
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-secondary px-4"
+                            data-bs-dismiss="modal">ปิดหน้าต่างนี้</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-        // Check if the site should be closed based on time
-            // Check time on page load
-            const now = new Date();
-            
-            const startTime = new Date('2026-02-07T17:55:00');
-            const endTime = new Date('2026-02-08T17:05:00');
-            
-            // Check if current time is within the range
-            if (now >= startTime && now <= endTime) {
-                // Show the unclosable modal
-                const closureModalElement = document.getElementById('closureModal');
-                const closureModal = new bootstrap.Modal(closureModalElement, {
-                    backdrop: 'static',
-                    keyboard: false
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Check if the site should be closed based on time
+                // Check time on page load
+                const now = new Date();
+
+                const startTime = new Date('2026-02-07T17:55:00');
+                const endTime = new Date('2026-02-08T17:05:00');
+
+                // Check if current time is within the range
+                if (now >= startTime && now <= endTime) {
+                    document.getElementById("app").hidden = true;
+                    document.getElementById("closure").hidden = false;
+
+                    // Stop further execution of the app
+                    return;
+                }
+
+                // Continue w normal functionality
+                const stickers = [
+                    'img/VoteYes-Profile-TP.png',
+                    'img/VoteYes-Profile-TP-L.png',
+                    'img/VoteYes-8FebOnly-Sticker.png',
+                    'img/VoteYes-XOnly-Sticker.png',
+                    'img/VoteYes-YesOnly-Sticker.png'
+                ];
+
+                // State variables
+                let fabricCanvas = null;
+                let originalWidth = 0;
+                let originalHeight = 0;
+                let scaleFactor = 1;
+                let currentImgUrl = null;
+                let hasImage = false;
+                let resizeTimer = null;
+                let originalFileType = 'image/png';
+
+                // DB Elements
+                const fileInput = document.getElementById('fileInput');
+                const uploadSection = document.getElementById('uploadSection');
+                const editorSection = document.getElementById('editorSection');
+                const exportSection = document.getElementById('exportSection');
+                const canvasWrapper = document.getElementById('canvas-wrapper');
+                const stickersContainer = document.getElementById('stickersContainer');
+                const resetBtn = document.getElementById('resetBtn');
+                const clearStickersBtn = document.getElementById('clearStickersBtn');
+                const downloadBtn = document.getElementById('downloadBtn');
+
+                // Modal Elements
+                const imageModalElement = document.getElementById('imageModal');
+                const bsModal = new bootstrap.Modal(imageModalElement);
+                const resultImage = document.getElementById('resultImage');
+                const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+
+                // Initialize Stickers
+                stickers.forEach(src => {
+                    const div = document.createElement('div');
+                    div.className = 'border rounded p-2 bg-white flex-shrink-0 sticker-item';
+                    div.innerHTML = `<img src="${src}" style="height: 60px; object-fit: contain;">`;
+                    div.addEventListener('click', () => addSticker(src));
+                    stickersContainer.appendChild(div);
                 });
-                closureModal.show();
-                
-                // Prevent any interactions with the page content
-                document.body.style.pointerEvents = 'none';
-                closureModalElement.style.pointerEvents = 'auto';
-                
-                // Stop further execution of the app
-                return;
-            }
-            
-            // Continue w normal functionality
-            const stickers = [
-                'img/VoteYes-Profile-TP.png',
-                'img/VoteYes-Profile-TP-L.png',
-                'img/VoteYes-8FebOnly-Sticker.png',
-                'img/VoteYes-XOnly-Sticker.png',
-                'img/VoteYes-YesOnly-Sticker.png'
-            ];
 
-            // State variables
-            let fabricCanvas = null;
-            let originalWidth = 0;
-            let originalHeight = 0;
-            let scaleFactor = 1;
-            let currentImgUrl = null;
-            let hasImage = false;
-            let resizeTimer = null;
-            let originalFileType = 'image/png';
+                // Event Listeners
+                fileInput.addEventListener('change', handleUpload);
+                resetBtn.addEventListener('click', reset);
+                clearStickersBtn.addEventListener('click', clearStickers);
+                downloadBtn.addEventListener('click', download);
 
-            // DB Elements
-            const fileInput = document.getElementById('fileInput');
-            const uploadSection = document.getElementById('uploadSection');
-            const editorSection = document.getElementById('editorSection');
-            const exportSection = document.getElementById('exportSection');
-            const canvasWrapper = document.getElementById('canvas-wrapper');
-            const stickersContainer = document.getElementById('stickersContainer');
-            const resetBtn = document.getElementById('resetBtn');
-            const clearStickersBtn = document.getElementById('clearStickersBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
+                // Modal Listeners
+                imageModalElement.addEventListener('hidden.bs.modal', closeModal);
+                modalDownloadBtn.addEventListener('click', saveImageToDevice);
 
-            // Modal Elements
-            const imageModalElement = document.getElementById('imageModal');
-            const bsModal = new bootstrap.Modal(imageModalElement);
-            const resultImage = document.getElementById('resultImage');
-            const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => {
+                        if (hasImage) initCanvas(null, true);
+                    }, 100);
+                });
 
-            // Initialize Stickers
-            stickers.forEach(src => {
-                const div = document.createElement('div');
-                div.className = 'border rounded p-2 bg-white flex-shrink-0 sticker-item';
-                div.innerHTML = `<img src="${src}" style="height: 60px; object-fit: contain;">`;
-                div.addEventListener('click', () => addSticker(src));
-                stickersContainer.appendChild(div);
-            });
+                function handleUpload(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
 
-            // Event Listeners
-            fileInput.addEventListener('change', handleUpload);
-            resetBtn.addEventListener('click', reset);
-            clearStickersBtn.addEventListener('click', clearStickers);
-            downloadBtn.addEventListener('click', download);
+                    originalFileType = file.type;
 
-            // Modal Listeners
-            imageModalElement.addEventListener('hidden.bs.modal', closeModal);
-            modalDownloadBtn.addEventListener('click', saveImageToDevice);
-
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    if (hasImage) initCanvas(null, true);
-                }, 100);
-            });
-
-            function handleUpload(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                originalFileType = file.type;
-
-                const reader = new FileReader();
-                reader.onload = (f) => {
-                    const data = f.target.result;
-                    initCanvas(data);
-                };
-                reader.readAsDataURL(file);
-            }
-
-            function toggleSections(show) {
-                if (show) {
-                    uploadSection.classList.add('hidden');
-                    editorSection.classList.remove('hidden');
-                    exportSection.classList.remove('hidden');
-                    // Trigger reflow for transition if needed, though mostly visibility handling here
-                    requestAnimationFrame(() => {
-                        editorSection.style.opacity = '1';
-                        exportSection.style.opacity = '1';
-                    });
-                } else {
-                    uploadSection.classList.remove('hidden');
-                    editorSection.classList.add('hidden');
-                    exportSection.classList.add('hidden');
-                    editorSection.style.opacity = '0';
-                    exportSection.style.opacity = '0';
-                }
-            }
-
-            function initCanvas(imgUrl, isResize = false) {
-                if (imgUrl && !isResize) {
-                    currentImgUrl = imgUrl;
+                    const reader = new FileReader();
+                    reader.onload = (f) => {
+                        const data = f.target.result;
+                        initCanvas(data);
+                    };
+                    reader.readAsDataURL(file);
                 }
 
-                if (!currentImgUrl) return;
+                function toggleSections(show) {
+                    if (show) {
+                        uploadSection.classList.add('hidden');
+                        editorSection.classList.remove('hidden');
+                        exportSection.classList.remove('hidden');
+                        // Trigger reflow for transition if needed, though mostly visibility handling here
+                        requestAnimationFrame(() => {
+                            editorSection.style.opacity = '1';
+                            exportSection.style.opacity = '1';
+                        });
+                    } else {
+                        uploadSection.classList.remove('hidden');
+                        editorSection.classList.add('hidden');
+                        exportSection.classList.add('hidden');
+                        editorSection.style.opacity = '0';
+                        exportSection.style.opacity = '0';
+                    }
+                }
 
-                hasImage = true;
-                toggleSections(true);
-
-                // Wait for DOM update so dimensions are correct (mostly immediate in Vanilla JS unlike Alpine nextTick, but good practice if animation involved)
-                setTimeout(() => {
-                    // Should dispose old canvas if exists to prevent duplicates or memory leaks
-                    if (fabricCanvas) {
-                        fabricCanvas.dispose();
-                        fabricCanvas = null;
+                function initCanvas(imgUrl, isResize = false) {
+                    if (imgUrl && !isResize) {
+                        currentImgUrl = imgUrl;
                     }
 
-                    // Reset wrapper content to clear any FabricJS added wrappers
-                    canvasWrapper.innerHTML = '<canvas id="c"></canvas>';
+                    if (!currentImgUrl) return;
 
-                    // Measure
-                    const styles = window.getComputedStyle(canvasWrapper);
-                    const paddingX = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
-                    const availableWidth = canvasWrapper.clientWidth - paddingX;
+                    hasImage = true;
+                    toggleSections(true);
 
-                    fabric.Image.fromURL(currentImgUrl, (img) => {
-                        if (!img) return;
-
-                        if (!isResize) {
-                            originalWidth = img.width;
-                            originalHeight = img.height;
+                    // Wait for DOM update so dimensions are correct (mostly immediate in Vanilla JS unlike Alpine nextTick, but good practice if animation involved)
+                    setTimeout(() => {
+                        // Should dispose old canvas if exists to prevent duplicates or memory leaks
+                        if (fabricCanvas) {
+                            fabricCanvas.dispose();
+                            fabricCanvas = null;
                         }
 
-                        const safeAvailableWidth = availableWidth > 0 ? availableWidth : 300;
+                        // Reset wrapper content to clear any FabricJS added wrappers
+                        canvasWrapper.innerHTML = '<canvas id="c"></canvas>';
 
-                        // Calculate scale
-                        scaleFactor = Math.min(safeAvailableWidth / originalWidth, 1);
+                        // Measure
+                        const styles = window.getComputedStyle(canvasWrapper);
+                        const paddingX = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
+                        const availableWidth = canvasWrapper.clientWidth - paddingX;
 
-                        const displayWidth = originalWidth * scaleFactor;
-                        const displayHeight = originalHeight * scaleFactor;
+                        fabric.Image.fromURL(currentImgUrl, (img) => {
+                            if (!img) return;
 
-                        fabricCanvas = new fabric.Canvas('c', {
-                            width: displayWidth,
-                            height: displayHeight,
-                            preserveObjectStacking: true,
-                            selection: false
+                            if (!isResize) {
+                                originalWidth = img.width;
+                                originalHeight = img.height;
+                            }
+
+                            const safeAvailableWidth = availableWidth > 0 ? availableWidth : 300;
+
+                            // Calculate scale
+                            scaleFactor = Math.min(safeAvailableWidth / originalWidth, 1);
+
+                            const displayWidth = originalWidth * scaleFactor;
+                            const displayHeight = originalHeight * scaleFactor;
+
+                            fabricCanvas = new fabric.Canvas('c', {
+                                width: displayWidth,
+                                height: displayHeight,
+                                preserveObjectStacking: true,
+                                selection: false
+                            });
+
+                            img.scale(scaleFactor);
+
+                            fabricCanvas.setBackgroundImage(img, () => {
+                                if (fabricCanvas) fabricCanvas.renderAll();
+                            });
                         });
-
-                        img.scale(scaleFactor);
-
-                        fabricCanvas.setBackgroundImage(img, () => {
-                            if (fabricCanvas) fabricCanvas.renderAll();
-                        });
-                    });
-                }, 0);
-            }
-
-            function addSticker(src) {
-                if (!fabricCanvas) return;
-
-                fabric.Image.fromURL(src, (img) => {
-                    if (!img) return;
-
-                    const targetWidth = fabricCanvas.width * 0.25;
-                    const scale = targetWidth / img.width;
-
-                    img.set({
-                        left: fabricCanvas.width / 2,
-                        top: fabricCanvas.height / 2,
-                        originX: 'center',
-                        originY: 'center',
-                        scaleX: scale,
-                        scaleY: scale,
-
-                        cornerStyle: 'circle',
-                        transparentCorners: false,
-                        cornerColor: '#007bff',
-                        cornerStrokeColor: '#ffffff',
-                        borderColor: '#007bff',
-                        cornerSize: 30,
-                        touchCornerSize: 30,
-                        padding: 10,
-                        lockScalingFlip: true
-                    });
-
-                    img.setControlsVisibility({
-                        mt: false, mb: false, ml: false, mr: false,
-                        tl: true, tr: true, bl: true, br: true, mtr: true
-                    });
-
-                    fabricCanvas.add(img);
-                    fabricCanvas.setActiveObject(img);
-                    fabricCanvas.requestRenderAll();
-                });
-            }
-
-            function download() {
-                if (!fabricCanvas) return;
-
-                fabricCanvas.discardActiveObject();
-                fabricCanvas.requestRenderAll();
-
-                setTimeout(() => {
-                    const multiplier = 1 / scaleFactor;
-
-                    let format = 'jpeg';
-                    let quality = 0.85;
-
-                    if (originalFileType === 'image/png') {
-                        format = 'png';
-                        quality = 1;
-                    }
-
-                    const dataURL = fabricCanvas.toDataURL({
-                        format: format,
-                        quality: quality,
-                        multiplier: multiplier
-                    });
-
-                    // Show Modal
-                    resultImage.src = dataURL;
-                    bsModal.show();
-                }, 50);
-            }
-
-            function closeModal() {
-                // Clear memory/display when hidden
-                resultImage.src = '';
-            }
-
-            function reset() {
-                hasImage = false;
-                currentImgUrl = null;
-                if (fabricCanvas) {
-                    // fabricCanvas.dispose(); // Handled in initCanvas/toggle logic mainly, but good to clean up
-                    fabricCanvas = null; // Removing reference
+                    }, 0);
                 }
-                fileInput.value = '';
-                toggleSections(false);
 
-                // Clear canvas wrapper visually
-                canvasWrapper.innerHTML = '<canvas id="c"></canvas>';
-            }
+                function addSticker(src) {
+                    if (!fabricCanvas) return;
 
-            function clearStickers() {
-                if (!fabricCanvas) return;
-                fabricCanvas.remove(...fabricCanvas.getObjects());
-                fabricCanvas.requestRenderAll();
-            }
+                    fabric.Image.fromURL(src, (img) => {
+                        if (!img) return;
 
-            function saveImageToDevice() {
-                if (!resultImage.src) return;
+                        const targetWidth = fabricCanvas.width * 0.25;
+                        const scale = targetWidth / img.width;
 
-                const link = document.createElement('a');
-                const isJpeg = resultImage.src.startsWith('data:image/jpeg');
-                link.download = isJpeg ? 'vote-yes-profile.jpg' : 'vote-yes-profile.png';
-                link.href = resultImage.src;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        });
-    </script>
+                        img.set({
+                            left: fabricCanvas.width / 2,
+                            top: fabricCanvas.height / 2,
+                            originX: 'center',
+                            originY: 'center',
+                            scaleX: scale,
+                            scaleY: scale,
+
+                            cornerStyle: 'circle',
+                            transparentCorners: false,
+                            cornerColor: '#007bff',
+                            cornerStrokeColor: '#ffffff',
+                            borderColor: '#007bff',
+                            cornerSize: 30,
+                            touchCornerSize: 30,
+                            padding: 10,
+                            lockScalingFlip: true
+                        });
+
+                        img.setControlsVisibility({
+                            mt: false, mb: false, ml: false, mr: false,
+                            tl: true, tr: true, bl: true, br: true, mtr: true
+                        });
+
+                        fabricCanvas.add(img);
+                        fabricCanvas.setActiveObject(img);
+                        fabricCanvas.requestRenderAll();
+                    });
+                }
+
+                function download() {
+                    if (!fabricCanvas) return;
+
+                    fabricCanvas.discardActiveObject();
+                    fabricCanvas.requestRenderAll();
+
+                    setTimeout(() => {
+                        const multiplier = 1 / scaleFactor;
+
+                        let format = 'jpeg';
+                        let quality = 0.85;
+
+                        if (originalFileType === 'image/png') {
+                            format = 'png';
+                            quality = 1;
+                        }
+
+                        const dataURL = fabricCanvas.toDataURL({
+                            format: format,
+                            quality: quality,
+                            multiplier: multiplier
+                        });
+
+                        // Show Modal
+                        resultImage.src = dataURL;
+                        bsModal.show();
+                    }, 50);
+                }
+
+                function closeModal() {
+                    // Clear memory/display when hidden
+                    resultImage.src = '';
+                }
+
+                function reset() {
+                    hasImage = false;
+                    currentImgUrl = null;
+                    if (fabricCanvas) {
+                        // fabricCanvas.dispose(); // Handled in initCanvas/toggle logic mainly, but good to clean up
+                        fabricCanvas = null; // Removing reference
+                    }
+                    fileInput.value = '';
+                    toggleSections(false);
+
+                    // Clear canvas wrapper visually
+                    canvasWrapper.innerHTML = '<canvas id="c"></canvas>';
+                }
+
+                function clearStickers() {
+                    if (!fabricCanvas) return;
+                    fabricCanvas.remove(...fabricCanvas.getObjects());
+                    fabricCanvas.requestRenderAll();
+                }
+
+                function saveImageToDevice() {
+                    if (!resultImage.src) return;
+
+                    const link = document.createElement('a');
+                    const isJpeg = resultImage.src.startsWith('data:image/jpeg');
+                    link.download = isJpeg ? 'vote-yes-profile.jpg' : 'vote-yes-profile.png';
+                    link.href = resultImage.src;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            });
+        </script>
 
 </body>
 
